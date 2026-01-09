@@ -1,0 +1,4 @@
+CVE_ID,Title,Vector,Reachability
+CVE-2024-1111,Low Risk: Header Disclosure,CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N,Internal-Only
+CVE-2024-2222,Low Risk: Cookie without HttpOnly,CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:N/I:L/A:N,Internal-Only
+CVE-2024-3333,Low Risk: Password Policy,CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:L/I:N/A:N,Internal-Only
