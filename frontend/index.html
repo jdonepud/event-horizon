@@ -89,7 +89,132 @@
         </section>
     </main>
 
-    <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+            const analysisLog = document.getElementById('analysisLog');
+            const chainViz = document.getElementById('chainViz');
+            const reachabilityValue = document.getElementById('reachabilityValue');
+            const mitreValue = document.getElementById('mitreValue');
+            const healthValue = document.getElementById('healthValue');
+            const healthCircle = document.getElementById('healthCircle');
+
+            let totalVulns = 0;
+
+            const addLog = (msg, type = 'info') => {
+                const entry = document.createElement('div');
+                entry.className = 'log-entry';
+                const now = new Date();
+                const ts = now.toTimeString().split(' ')[0];
+                entry.innerHTML = `<span class="timestamp">[${ts}]</span> <span class="msg">${msg}</span>`;
+                analysisLog.prepend(entry);
+                if (type === 'danger') entry.style.borderLeftColor = 'var(--danger)';
+                if (type === 'success') entry.style.borderLeftColor = '#00ff88';
+            };
+
+            const updateHealthChart = (newCount) => {
+                totalVulns += newCount;
+                // Sensitivity: 20 vulnerabilities = 100% depth for more visible changes
+                const percentage = Math.min(100, Math.round((totalVulns / 20) * 100));
+                const offset = 283 - (283 * (percentage / 100));
+
+                healthValue.innerText = `${percentage}%`;
+                healthCircle.style.strokeDashoffset = offset;
+
+                if (percentage >= 100) {
+                    healthCircle.style.stroke = '#00ff88';
+                }
+            };
+
+            const API_URL = 'http://localhost:8000';
+
+            const checkEngineStatus = async () => {
+                try {
+                    const resp = await fetch(`${API_URL}/`);
+                    if (resp.ok) {
+                        document.querySelector('.status-badge').innerHTML = '<span class="pulse"></span> ENGINE ONLINE';
+                        addLog('Backend engine connected and ready.', 'success');
+                    }
+                } catch (e) {
+                    document.querySelector('.status-badge').innerHTML = '<span class="pulse" style="background: var(--danger); box-shadow: 0 0 10px var(--danger);"></span> ENGINE OFFLINE';
+                    addLog('Warning: Running in local simulation mode.', 'info');
+                }
+            };
+
+            checkEngineStatus();
+
+            const processData = async (file) => {
+                addLog(`Ingesting ${file.name}...`, 'info');
+                const formData = new FormData();
+                formData.append('file', file);
+
+                try {
+                    const response = await fetch(`${API_URL}/ingest/csv`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!response.ok) throw new Error('Backend error');
+
+                    const data = await response.json();
+                    addLog(`Received analysis for ${data.summary.total_processed} vulnerabilities.`, 'success');
+                    updateHealthChart(data.summary.total_processed);
+
+                    if (data.attack_path_analysis) {
+                        const pathMsg = data.summary.is_critical ? `CRITICAL: Vector Chaining: ${data.attack_path_analysis.path}` : `Path: ${data.attack_path_analysis.path}`;
+                        addLog(pathMsg, data.summary.is_critical ? 'danger' : 'info');
+                    }
+
+                    updateDashboard({
+                        reachability: data.individual_reports[0]?.reachability || 'Calculated Profile',
+                        mitre: data.summary.is_critical ? 'T1190' : 'T1059',
+                        vulns: data.summary.total_processed,
+                        isCritical: data.summary.is_critical
+                    });
+
+                } catch (error) {
+                    addLog(`Using local fallback for ${file.name}...`, 'info');
+                    setTimeout(() => {
+                        const isCritical = file.name.includes('critical');
+                        const count = file.name.includes('low') ? 10 : 3;
+                        updateDashboard({
+                            reachability: isCritical ? 'Critical Infrastructure' : 'Isolated Network',
+                            mitre: isCritical ? 'T1190' : 'T1059',
+                            isCritical: isCritical
+                        });
+                        updateHealthChart(count);
+                        addLog(`Simulation complete: ${count} vulns processed.`, 'success');
+                    }, 800);
+                }
+            };
+
+            const updateDashboard = (profile) => {
+                reachabilityValue.innerText = profile.reachability;
+                mitreValue.innerText = profile.mitre;
+                const nodes = document.querySelectorAll('.node');
+                nodes.forEach((node, i) => {
+                    setTimeout(() => {
+                        const color = profile.isCritical ? '#ff2d55' : '#007aff';
+                        node.style.borderColor = color;
+                        node.style.boxShadow = `0 0 20px ${color}66`;
+                    }, i * 200);
+                });
+            };
+
+            dropZone.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) processData(e.target.files[0]);
+            });
+            dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.borderColor = 'var(--accent)'; });
+            dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = 'var(--border)'; });
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.style.borderColor = 'var(--border)';
+                if (e.dataTransfer.files.length > 0) processData(e.dataTransfer.files[0]);
+            });
+        });
+    </script>
 </body>
 
 </html>
