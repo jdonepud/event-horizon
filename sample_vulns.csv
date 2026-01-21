@@ -1,0 +1,4 @@
+CVE_ID,Title,Vector,Reachability
+CVE-2024-1234,Broken Access Control,CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H,Internet-Facing
+CVE-2024-5678,SSRF in Image Proxy,CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N,Internal-Network
+CVE-2024-9012,Local Privilege Escalation,CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H,Local-System

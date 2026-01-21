@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Horizon | Automated Triage</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=JetBrains+Mono&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="dark-theme">
+    <div class="glow-container">
+        <div class="glow-orb"></div>
+    </div>
+
+    <nav>
+        <div class="logo">EVENT<span>HORIZON</span></div>
+        <div class="status-badge">
+            <span class="pulse"></span> ENGINE ONLINE
+        </div>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Vulnerability <span class="gradient-text">Triage</span></h1>
+            <p>Automated Reachability & Impact Analysis Engine</p>
+        </header>
+
+        <section class="dashboard-grid">
+            <!-- Stats Column -->
+            <div class="card stat-card">
+                <h3>System Health</h3>
+                <div class="chart-placeholder">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#222" stroke-width="10" />
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="var(--accent)" stroke-width="10"
+                            stroke-dasharray="283" stroke-dashoffset="60" />
+                    </svg>
+                    <div class="stat-value">94%</div>
+                </div>
+                <p>Coverage Depth</p>
+            </div>
+
+            <!-- Triage Control -->
+            <div class="card control-card">
+                <h3>Automated Ingestion</h3>
+                <div class="upload-zone" id="dropZone">
+                    <div class="icon">⚡</div>
+                    <p>Drop CSV or JSON reports</p>
+                    <button class="btn-primary">Select Data Source</button>
+                    <input type="file" id="fileInput" hidden>
+                </div>
+            </div>
+
+            <!-- Analysis Log -->
+            <div class="card log-card">
+                <h3>Real-time Analysis</h3>
+                <div class="log-entries" id="analysisLog">
+                    <div class="log-entry">
+                        <span class="timestamp">[16:45:02]</span>
+                        <span class="msg">Awaiting ingestion...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Threat Intelligence View -->
+        <section class="threat-view">
+            <div class="card full-width">
+                <h3>Attack Path Analysis (Vector Chaining)</h3>
+                <div class="chain-viz" id="chainViz">
+                    <div class="node">SSRF <div class="node-tag">CVE-2024-001</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="node active">SQLi <div class="node-tag">CVE-2024-002</div>
+                    </div>
+                    <div class="connector dashed"></div>
+                    <div class="node ghost">RCE</div>
+                </div>
+                <div class="impact-report" id="impactReport">
+                    <p><strong>Predicted Reachability:</strong> <span id="reachabilityValue">Critical Infrastructure
+                            Access</span></p>
+                    <p><strong>MITRE Mapping:</strong> <span id="mitreValue">T1190 (Exploit Public-Facing
+                            Application)</span></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

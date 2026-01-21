@@ -1,0 +1,4 @@
+CVE_ID,Title,Vector,Reachability
+CVE-2026-9999,Pre-Auth Remote Code Execution,CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H,Internet-Facing
+CVE-2026-8888,Authentication Bypass via Token Injection,CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N,Internet-Facing
+CVE-2026-7777,Database Credential Leak (Config Exposure),CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H,Internal-Network

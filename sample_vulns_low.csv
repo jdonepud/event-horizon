@@ -1,0 +1,4 @@
+CVE_ID,Title,Vector,Reachability
+CVE-2024-1111,Unquoted Service Path,CVSS:3.1/AV:L/AC:L/PR:H/UI:N/S:U/C:L/I:L/A:L,Local-System
+CVE-2024-2222,Information Disclosure in Logs,CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N,Internal-Network
+CVE-2024-3333,Cross-Site Scripting (Reflected),CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N,Internet-Facing
