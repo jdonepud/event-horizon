@@ -15,6 +15,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const reachabilityValue = document.getElementById('reachabilityValue');
     const mitreValue = document.getElementById('mitreValue');
+    const healthValue = document.getElementById('healthValue');
+    const healthCircle = document.getElementById('healthCircle');
+
+    let totalVulns = 0;
+
+    const updateHealthChart = (newCount) => {
+        totalVulns += newCount;
+        // Logic: 50 vulnerabilities = 100% depth for demonstration
+        const percentage = Math.min(100, Math.round((totalVulns / 50) * 100));
+        const offset = 283 - (283 * (percentage / 100));
+
+        healthValue.innerText = `${percentage}%`;
+        healthCircle.style.strokeDashoffset = offset;
+
+        if (percentage >= 100) {
+            healthCircle.style.stroke = '#00ff88'; // Change to green when full
+        }
+    };
 
     const API_URL = 'http://localhost:8000';
 
@@ -49,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
             addLog(`Received analysis for ${data.summary.total_processed} vulnerabilities.`, 'success');
+            updateHealthChart(data.summary.total_processed);
 
             if (data.attack_path_analysis) {
                 if (data.summary.is_critical) {
@@ -76,6 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     vulns: 3,
                     isCritical: isCritical
                 });
+                updateHealthChart(3);
                 addLog(`Simulation complete for ${file.name}.`, 'success');
             }, 1000);
         }
